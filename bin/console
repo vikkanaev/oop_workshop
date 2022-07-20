@@ -1,0 +1,40 @@
+#!/usr/bin/env ruby
+
+require_relative '../system/boot'
+
+def init_reporter
+  p = Poro::Place.new(latitude: 41.643414, longitude: 41.639900)
+  d = Datasource::VisualcrossingClient
+  Weather::Reporter.new(place: p, datasource_class: d, unit: :metric)
+end
+
+def report(date)
+  r = init_reporter
+  r.report(date: date)
+end
+
+def batch_report(dates)
+  r = init_reporter
+  r.batch_report(dates: dates)
+end
+
+def predict(date)
+  r = init_reporter
+  p = Weather::Predicter.new(reporter: r)
+  p.predict(date:)
+end
+
+def produce(date)
+  r = init_reporter
+  p = Weather::Predicter.new(reporter: r)
+  f = IceCreamFactory.new(predicter: p)
+  f.produce(date:, quantity: 10)
+end
+
+# How to use console:
+# report('2022-07-15')
+# batch_report(['2022-07-15', '2021-07-15', '2020-07-15', '2019-07-15', '2018-07-15'])
+# predict('2022-07-15')
+# produce('2022-07-15')
+
+Pry.start
